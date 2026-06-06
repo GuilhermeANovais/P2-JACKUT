@@ -1,10 +1,6 @@
 # Relatório — Milestone 1
 ## Projeto JACKUT · P2 · 2023.1
 
-> **Repositório:** https://github.com/GuilhermeANovais/P2-JACKUT  
-> **Data de entrega:** 06/06/2026  
-> **Autor:** Guilherme A. Novais
-
 ---
 
 ## 1. Visão Geral
