@@ -1,0 +1,15 @@
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\Main.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\Facade.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\AtributoNaoPreenchidoException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\AutoAmizadeException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\AutoRecadoException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\ContaJaExisteException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\ConvitePendenteException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\LoginInvalidoException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\LoginOuSenhaInvalidosException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\SemRecadosException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\SenhaInvalidaException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\UsuarioJaAmigoException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\exceptions\UsuarioNaoCadastradoException.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\models\Sistema.java
+C:\Users\guinwv\Projetos\bootstrap-P2-2023.1-JACKUT\P2-2023.1-JACKUT\src\br\ufal\ic\p2\jackut\models\Usuario.java
