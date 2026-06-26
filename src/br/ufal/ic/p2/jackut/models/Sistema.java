@@ -297,7 +297,7 @@ public class Sistema implements Serializable {
         }
 
         Usuario usuarioDestinatario = buscarUsuario(destinatario);
-        usuarioDestinatario.adicionarRecado(recado);
+        usuarioDestinatario.adicionarRecado(loginRemetente, recado);
     }
 
     /**
