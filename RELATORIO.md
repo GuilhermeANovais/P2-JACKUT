@@ -1,256 +1,133 @@
-# Relatório — Milestone 1
+# Relatório — Milestone 1 e Milestone 2
 ## Projeto JACKUT · P2 · 2023.1
 
 ---
 
 ## 1. Visão Geral
 
-O **JACKUT** é um sistema de rede social desenvolvido em Java como projeto de Programação 2 (P2). O Milestone 1 abrange a implementação das quatro primeiras User Stories, cobrindo desde a criação de contas até o envio e leitura de recados entre usuários, com persistência de dados entre execuções.
+O **JACKUT** é um sistema de rede social desenvolvido em Java como projeto de Programação 2 (P2). 
 
-A validação é realizada por meio da biblioteca **EasyAccept**, que executa scripts de teste de aceitação contra a `Facade` do sistema. Todos os **184 testes** das 8 suítes foram aprovados.
+- **Milestone 1**: Implementação inicial cobrindo US1 a US4 (criação de conta, perfil, amizade e envio de recados).
+- **Milestone 2**: Evolução funcional cobrindo US5 a US9 (comunidades, mensagens de grupos, relacionamentos estendidos como paqueras/ídolos/inimigos e encerramento de conta). Houve uma **refatoração arquitetural profunda** para remover o débito técnico (God Object) deixado no M1, dividindo a lógica em Serviços.
 
----
-
-## 2. User Stories Implementadas
-
-### US1 — Criação de Conta e Sessão
-
-Permite que um usuário crie uma conta na rede social fornecendo login, senha e nome.
-
-**Regras implementadas:**
-- Login não pode ser nulo ou vazio → `LoginInvalidoException`
-- Senha não pode ser nula ou vazia → `SenhaInvalidaException`
-- Não são permitidos dois usuários com o mesmo login → `ContaJaExisteException`
-- Dois usuários podem ter o mesmo nome se os logins forem diferentes
-- Nome vazio é permitido
-- Abertura de sessão valida login e senha → `LoginOuSenhaInvalidosException` (mensagem genérica por segurança)
-- ID de sessão gerado como **UUID opaco**, não revelando o login do usuário
-
-**Suítes de teste:**
-
-| Arquivo | Testes | Resultado |
-|---|---|---|
-| `us1_1.txt` | 17 | ✅ OK |
-| `us1_2.txt` | 7 | ✅ OK (persistência) |
+A validação do projeto é realizada via **EasyAccept**. Todos os **466 testes** das 18 suítes foram aprovados (**100% de sucesso**).
 
 ---
 
-### US2 — Perfil de Usuário
+## 2. Nova Arquitetura do Sistema (Refatoração M2)
 
-Permite a um usuário cadastrado criar e editar atributos do seu perfil.
+No Milestone 2, a arquitetura foi completamente refatorada. O antigo `Sistema.java` que acumulava todas as responsabilidades (God Object) foi desmembrado num design **orientado a serviços (Service Layer)** com clara separação de camadas:
 
-**Regras implementadas:**
-- Usuário pode preencher qualquer atributo com qualquer nome (mapa dinâmico chave-valor)
-- Atributo não preenchido lança `AtributoNaoPreenchidoException`
-- Atributo `senha` é protegido: não acessível via `getAtributoUsuario` por razões de segurança
-- Edição de perfil requer sessão válida → `UsuarioNaoCadastradoException`
-- Consulta de atributo requer usuário existente → `UsuarioNaoCadastradoException`
-- Atributo `nome` é armazenado no perfil junto com os demais atributos
-
-**Suítes de teste:**
-
-| Arquivo | Testes | Resultado |
-|---|---|---|
-| `us2_1.txt` | 36 | ✅ OK |
-| `us2_2.txt` | 13 | ✅ OK (persistência) |
-
----
-
-### US3 — Adição de Amigos
-
-Permite que usuários cadastrados se adicionem como amigos. O relacionamento só é efetivado quando ambos se adicionam mutuamente.
-
-**Regras implementadas:**
-- Convite enviado fica pendente até o alvo retribuir
-- Ao retribuir, a amizade é efetivada bilateralmente
-- Auto-amizade proibida → `AutoAmizadeException`
-- Amigo já confirmado não pode ser re-adicionado → `UsuarioJaAmigoException`
-- Convite duplicado (pendente) não pode ser re-enviado → `ConvitePendenteException`
-- Alvo inexistente → `UsuarioNaoCadastradoException`
-- Sessão inválida → `UsuarioNaoCadastradoException`
-- Lista de amigos retornada no formato `{login1,login2,...}` ou `{}`
-- Verificação de auto-amizade ocorre **antes** da busca do alvo no sistema (ordem semântica correta)
-
-**Suítes de teste:**
-
-| Arquivo | Testes | Resultado |
-|---|---|---|
-| `us3_1.txt` | 46 | ✅ OK |
-| `us3_2.txt` | 10 | ✅ OK (persistência) |
-
----
-
-### US4 — Envio e Leitura de Recados
-
-Permite que usuários troquem recados entre si. Os recados são armazenados em fila FIFO.
-
-**Regras implementadas:**
-- Recados podem ser enviados para qualquer usuário cadastrado
-- Auto-recado proibido → `AutoRecadoException`
-- Destinatário inexistente → `UsuarioNaoCadastradoException`
-- Sessão inválida → `UsuarioNaoCadastradoException`
-- Leitura consome o recado (remove da fila)
-- Fila vazia ao tentar ler → `SemRecadosException`
-- Ordem dos recados preservada (FIFO) mesmo com múltiplos remetentes
-
-**Suítes de teste:**
-
-| Arquivo | Testes | Resultado |
-|---|---|---|
-| `us4_1.txt` | 42 | ✅ OK |
-| `us4_2.txt` | 13 | ✅ OK (persistência) |
-
----
-
-## 3. Resultado Global dos Testes
-
-| Suíte | Testes | Status |
-|---|---|---|
-| `us1_1.txt` | 17 | ✅ |
-| `us1_2.txt` | 7 | ✅ |
-| `us2_1.txt` | 36 | ✅ |
-| `us2_2.txt` | 13 | ✅ |
-| `us3_1.txt` | 46 | ✅ |
-| `us3_2.txt` | 10 | ✅ |
-| `us4_1.txt` | 42 | ✅ |
-| `us4_2.txt` | 13 | ✅ |
-| **Total** | **184** | **✅ 100%** |
-
----
-
-## 4. Arquitetura do Sistema
-
-O projeto adota o padrão **Facade** exigido pelo EasyAccept, com separação clara entre camadas:
-
-```
+```text
 EasyAccept (testes)
      │
      ▼
- Facade.java          ← ponto de entrada único para o EasyAccept
+ Facade.java              ← Ponto de entrada. Coordena serviços, resolve IDs de sessão em logins e formata saída.
+     │
+     ├── SessaoService          ← Gere aberturas e encerramento de sessões
+     ├── UsuarioService         ← Gere CRUD e perfil de usuários
+     ├── AmizadeService         ← Gere lógica de convites e amigos
+     ├── RecadoService          ← Gere filas de recados privados
+     ├── ComunidadeService      ← Gere criação, membros e mensagens de comunidades
+     └── RelacionamentoService  ← Gere ídolos, paqueras (com gatilhos de recado) e bloqueios por inimizade
      │
      ▼
- Sistema.java         ← lógica de negócio, gerenciamento de estado e persistência
+Camada de Domínio (Models) ← Entidades: Usuario, Comunidade, Recado
      │
-     ├── Map<String, Usuario>   usuarios  (persistido via serialização)
-     └── Map<String, String>    sessoes   (transiente — não persistido)
-         │
-         ▼
-     Usuario.java     ← entidade: perfil, amigos, convites, recados
-         │
-         ├── Map<String, String>  perfil           (atributos dinâmicos)
-         ├── List<String>         amigos
-         ├── List<String>         convitesEnviados
-         ├── List<String>         convitesRecebidos
-         └── Queue<String>        recados          (FIFO via LinkedList)
+     ▼
+PersistenceManager        ← Camada de I/O. Isola a leitura/gravação em arquivo (SistemaDados DTO)
 ```
 
-### Exceções de domínio
-
-Todas as exceções são checked e estendem `Exception` com mensagem fixa (conforme exigência do EasyAccept):
-
-| Exceção | Mensagem |
-|---|---|
-| `LoginInvalidoException` | `Login inválido.` |
-| `SenhaInvalidaException` | `Senha inválida.` |
-| `ContaJaExisteException` | `Conta com esse nome já existe.` |
-| `LoginOuSenhaInvalidosException` | `Login ou senha inválidos.` |
-| `UsuarioNaoCadastradoException` | `Usuário não cadastrado.` |
-| `AtributoNaoPreenchidoException` | `Atributo não preenchido.` |
-| `AutoAmizadeException` | `Usuário não pode adicionar a si mesmo como amigo.` |
-| `UsuarioJaAmigoException` | `Usuário já está adicionado como amigo.` |
-| `ConvitePendenteException` | `Usuário já está adicionado como amigo, esperando aceitação do convite.` |
-| `AutoRecadoException` | `Usuário não pode enviar recado para si mesmo.` |
-| `SemRecadosException` | `Não há recados.` |
+**Benefícios da Nova Arquitetura:**
+- **Coesão e Baixo Acoplamento:** Cada serviço tem uma única responsabilidade.
+- **Isolamento da `Facade`:** A `Facade` deixou de ter lógica de negócio e foca-se apenas na formatação (ex: `"{login1,login2}"`) e conversão de Sessão `->` Login.
+- **Injeção de Dependência Simples:** A `Facade` inicializa os serviços passando o mapa de dados partilhados por referência.
 
 ---
 
-## 5. Persistência
+## 3. User Stories Implementadas
 
-O sistema utiliza **serialização Java** (`ObjectOutputStream` / `ObjectInputStream`) para persistir o estado entre execuções:
+### M1: US1 a US4 (Resumo)
+- **US1 — Conta e Sessão**: Cadastro com validações únicas; sessões usam UUIDs opacos.
+- **US2 — Perfil**: Atributos flexíveis geridos via HashMap; proteções de segurança (senha inacessível).
+- **US3 — Amizades**: Fluxo bidirecional (convite pendente -> aceitação).
+- **US4 — Recados Privados**: Filas FIFO implementadas com suporte a leitura consumível.
 
-- O objeto `Sistema` completo é serializado no arquivo `dados.dat`
-- O mapa `sessoes` é marcado como `transient` — não é persistido (cada execução inicia sem sessões ativas)
-- O carregamento trata falhas de I/O retornando um `Sistema` vazio (fail-safe)
-- `zerarSistema()` apaga o arquivo de dados e limpa memória
+### M2: US5 — Comunidades (Criação)
+Permite a criação e consulta de comunidades.
+- **Regras:** Nome de comunidade é único (`ComunidadeJaExisteException`). O criador torna-se dono e membro automaticamente.
+
+### M2: US6 — Adição a Comunidades
+Permite entrar em comunidades existentes e listar participações.
+- **Regras:** Proibido adicionar membros que já pertençam à comunidade (`UsuarioJaMembroException`).
+
+### M2: US7 — Mensagens de Comunidades
+Permite enviar mensagens a todos os membros de uma comunidade.
+- **Regras:** Semelhante a recados (FIFO), mas consumida através de um método próprio `lerMensagem`. 
+
+### M2: US8 — Paqueras, Ídolos e Inimigos
+Expande o sistema de relacionamento.
+- **Fã/Ídolo**: Relação unidirecional. Não requer aceitação.
+- **Paquera**: Relação inicialmente secreta. Se mútua (ambos se adicionarem), o sistema **dispara um recado automático** alertando o *match*.
+- **Inimizade (Bloqueio)**: Se o usuário A adicionar B como inimigo, B fica bloqueado de enviar recados, adicionar como amigo/ídolo/paquera ao usuário A. (Levanta `FuncaoInvalidaException`).
+
+### M2: US9 — Encerramento de Conta
+Permite apagar completamente a conta de um usuário.
+- **Regras de Cascata:**
+  - O perfil e sessão do usuário são apagados.
+  - O usuário é removido de todas as comunidades que participa.
+  - Todas as **comunidades das quais o usuário é dono são apagadas** (e seus membros perdem o acesso).
+  - Todas as referências de amizade do usuário nas contas dos outros são apagadas.
+  - **Recados enviados pelo usuário apagado** (que ainda não foram lidos) **somem das caixas de entrada** dos destinatários. (Exigiu a criação do objeto `Recado.java` para rastrear remetentes).
 
 ---
 
-## 6. Decisões de Design Notáveis
+## 4. Persistência de Dados
 
-| Decisão | Justificativa |
-|---|---|
-| ID de sessão como UUID | Evita colisão entre sessões e não expõe o login do usuário |
-| `LinkedHashMap` para usuários | Preserva ordem de inserção |
-| `LinkedList` para recados | Implementa `Queue` com operações O(1) nas pontas (FIFO) |
-| Atributos do perfil como `HashMap` | Permite atributos dinâmicos sem schema fixo |
-| `Collections.unmodifiableList` nos getters | Encapsulamento: listas internas não mutáveis externamente |
-| Senha protegida em `getAtributoUsuario` | Segurança: senha não acessível via leitura de perfil |
+O estado da aplicação é serializado na classe `SistemaDados` (DTO).
+- O arquivo `dados.dat` guarda os mapas de **Usuários** e **Comunidades**.
+- Recados e mensagens são persistidos automaticamente através da árvore de serialização da entidade `Usuario`.
+- Variáveis transientes (ex: mapa de Sessões na Facade) são descartadas ao encerrar, forçando o utilizador a logar novamente noutra execução.
 
 ---
 
-## 7. Como Executar
+## 5. Resultado Global dos Testes
 
-### Compilação
+O projeto passou **integralmente em todos os testes** (100% verde).
 
+| US | Arquivo | Testes OK |
+|---|---|---|
+| **US1** | `us1_1.txt`, `us1_2.txt` | 24 |
+| **US2** | `us2_1.txt`, `us2_2.txt` | 49 |
+| **US3** | `us3_1.txt`, `us3_2.txt` | 56 |
+| **US4** | `us4_1.txt`, `us4_2.txt` | 55 |
+| **US5** | `us5_1.txt`, `us5_2.txt` | 44 |
+| **US6** | `us6_1.txt`, `us6_2.txt` | 35 |
+| **US7** | `us7_1.txt`, `us7_2.txt` | 84 |
+| **US8** | `us8_1.txt`, `us8_2.txt` | 102 |
+| **US9** | `us9_1.txt`, `us9_2.txt` | 24 |
+| **Total** | | **466 ✅** |
+
+---
+
+## 6. Como Compilar e Executar
+
+Graças à nova infraestrutura simples, você pode compilar ou correr os testes inteiramente usando um script rápido de linha de comando.
+
+**Passo 1: Entrar na pasta `src`**
+Abra o seu terminal na pasta raiz do projeto e entre em `src`:
 ```powershell
-# A partir da raiz do projeto (P2-2023.1-JACKUT/)
-javac -cp "lib/easyaccept.jar;src" -d out (Get-ChildItem -Recurse src -Filter "*.java" | ForEach-Object { $_.FullName })
-```
-
-### Execução dos Testes
-
-```powershell
-# A partir da pasta src/
 cd src
-java -cp ".;../out;../lib/easyaccept.jar" Main
 ```
 
-### Resultado Esperado
-
-```
-Test file tests/us1_1.txt: 17 tests OK
-Test file tests/us1_2.txt: 7 tests OK
-Test file tests/us2_1.txt: 36 tests OK
-Test file tests/us2_2.txt: 13 tests OK
-Test file tests/us3_1.txt: 46 tests OK
-Test file tests/us3_2.txt: 10 tests OK
-Test file tests/us4_1.txt: 42 tests OK
-Test file tests/us4_2.txt: 13 tests OK
+**Passo 2: Compilar**
+```powershell
+javac -cp "..\lib\easyaccept.jar" -d "..\bin" (Get-ChildItem -Recurse *.java)
 ```
 
----
-
-## 8. Estrutura de Arquivos
-
+**Passo 3: Executar a suite completa**
+```powershell
+java -cp "..\bin;..\lib\easyaccept.jar" Main
 ```
-P2-2023.1-JACKUT/
-├── lib/
-│   └── easyaccept.jar
-├── src/
-│   ├── Main.java
-│   ├── tests/
-│   │   ├── us1_1.txt, us1_2.txt
-│   │   ├── us2_1.txt, us2_2.txt
-│   │   ├── us3_1.txt, us3_2.txt
-│   │   └── us4_1.txt, us4_2.txt
-│   └── br/ufal/ic/p2/jackut/
-│       ├── Facade.java
-│       ├── exceptions/
-│       │   ├── AtributoNaoPreenchidoException.java
-│       │   ├── AutoAmizadeException.java
-│       │   ├── AutoRecadoException.java
-│       │   ├── ContaJaExisteException.java
-│       │   ├── ConvitePendenteException.java
-│       │   ├── LoginInvalidoException.java
-│       │   ├── LoginOuSenhaInvalidosException.java
-│       │   ├── SemRecadosException.java
-│       │   ├── SenhaInvalidaException.java
-│       │   ├── UsuarioJaAmigoException.java
-│       │   └── UsuarioNaoCadastradoException.java
-│       └── models/
-│           ├── Sistema.java
-│           └── Usuario.java
-├── .gitignore
-├── MILESTONE_1.md
-└── P2-2023.1-JACKUT.iml
-```
+
+*(Obs: para Mac/Linux, usar `:` em vez de `;` no classpath e `/` nos diretórios).*
